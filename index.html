@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='85'>🚀</text></svg>">
+<meta property="og:title" content="starter — join nostr in 60 seconds">
+<meta property="og:description" content="Make a key, write your profile, follow good people, say hello. No app, no signup, no email.">
+<meta property="og:url" content="https://nostr-client.github.io/starter/">
+<meta property="og:image" content="https://nostr-client.github.io/starter/og.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="nostr-client">
+<meta name="twitter:card" content="summary_large_image">
+<title>starter — join nostr in 60 seconds</title>
+<link rel="stylesheet" href="https://nostr-client.github.io/theme/theme.css">
+<style>
+  body { max-width: 34rem; margin: 0 auto; padding: 2.5rem 1.2rem 5rem; }
+  h1 { font-size: 1.6rem; margin: 0 0 .3rem; }
+  .lede { color: var(--nc-soft); margin: 0 0 1.6rem; }
+  .step { display: none; }
+  .step.active { display: block; }
+  .card { background: var(--nc-surface); border: 1px solid var(--nc-line);
+    border-radius: var(--nc-radius); box-shadow: var(--nc-shadow); padding: 1.2rem 1.3rem;
+    display: grid; gap: .8rem; }
+  label { display: grid; gap: .3rem; font-size: .78rem; font-weight: 600;
+    color: var(--nc-soft); text-transform: uppercase; letter-spacing: .04em; }
+  input, textarea { font: inherit; font-weight: 400; text-transform: none; letter-spacing: normal;
+    padding: .55em .7em; border-radius: var(--nc-radius-sm); border: 1px solid var(--nc-line);
+    background: var(--nc-inset); color: var(--nc-ink); width: 100%; box-sizing: border-box; }
+  input:focus, textarea:focus { outline: 2px solid var(--nc-accent-soft); border-color: var(--nc-accent); }
+  .dots { display: flex; gap: .4rem; margin: 1.2rem 0; }
+  .dots span { width: .55rem; height: .55rem; border-radius: 50%; background: var(--nc-line); }
+  .dots span.on { background: var(--nc-accent); }
+  .key { font-family: var(--nc-mono); font-size: .78rem; overflow-wrap: anywhere;
+    background: var(--nc-inset); border-radius: 8px; padding: .6em .7em; cursor: pointer; }
+  .key:hover { outline: 1px solid var(--nc-accent); }
+  .warn { background: #fff7e8; border: 1px solid #f0d9a8; color: #7a5a12;
+    border-radius: var(--nc-radius-sm); padding: .7em .9em; font-size: .85rem; }
+  .who { display: flex; align-items: center; gap: .7rem; padding: .45rem 0; }
+  .who img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: var(--nc-inset); }
+  .who .n { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .who .a { font-weight: 400; font-size: .8rem; color: var(--nc-soft); display: block;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .who input { width: auto; }
+  .row { display: flex; gap: .6rem; align-items: center; justify-content: space-between; }
+  .status { font-size: .82rem; color: var(--nc-soft); white-space: pre-wrap; }
+  .clients { display: grid; gap: .6rem; grid-template-columns: 1fr 1fr; margin-top: .6rem; }
+  .clients a { display: block; padding: .8rem 1rem; border: 1px solid var(--nc-line);
+    border-radius: var(--nc-radius-sm); text-decoration: none; background: var(--nc-surface); }
+  .clients a strong { display: block; color: var(--nc-ink); }
+  .clients a span { font-size: .8rem; color: var(--nc-soft); }
+  .center { text-align: center; }
+</style>
+</head>
+<body>
+<h1>🚀 Join nostr in 60 seconds</h1>
+<p class="lede">No signup. No email. No company. You make a key, and the key
+is your account — on every nostr app, forever.</p>
+
+<div class="dots" id="dots"><span class="on"></span><span></span><span></span><span></span></div>
+
+<div class="step active" id="s1">
+  <div class="card">
+    <label>Name <input id="name" placeholder="satoshi" maxlength="50"></label>
+    <label>About (optional) <textarea id="about" rows="2" placeholder="plumber. i fix leaks."></textarea></label>
+    <label>Avatar URL (optional) <input id="picture" placeholder="https://…/me.jpg"></label>
+    <button class="nc-btn" id="go1">Create my key →</button>
+  </div>
+</div>
+
+<div class="step" id="s2">
+  <div class="card">
+    <strong>This is your key. It IS your account.</strong>
+    <div class="key" id="nsec" title="click to copy"></div>
+    <div class="warn">Save it somewhere safe (password manager). Anyone with
+    this key <em>is</em> you; if you lose it there is no “forgot password”.
+    Later, move it into a signer extension and never paste it again.</div>
+    <label style="display:flex;align-items:center;gap:.5em;text-transform:none;font-size:.9rem">
+      <input type="checkbox" id="saved" style="width:auto"> I copied my key somewhere safe
+    </label>
+    <button class="nc-btn" id="go2" disabled>Continue →</button>
+  </div>
+</div>
+
+<div class="step" id="s3">
+  <div class="card">
+    <strong>Follow a few good accounts</strong>
+    <div id="pack"><span class="status">finding people…</span></div>
+    <label style="text-transform:none">First post (optional)
+      <textarea id="hello" rows="2">Hello nostr! Just joined from https://nostr-client.github.io/starter/ #introductions</textarea>
+    </label>
+    <button class="nc-btn" id="go3">Publish my profile →</button>
+    <div class="status" id="pubstatus"></div>
+  </div>
+</div>
+
+<div class="step" id="s4">
+  <div class="card center">
+    <strong style="font-size:1.2rem">You're on nostr 🎉</strong>
+    <div class="key" id="npub" title="click to copy"></div>
+    <p class="status">You're already logged in to all of these — pick your speed:</p>
+    <div class="clients">
+      <a href="https://nostr-client.github.io/zen/"><strong>zen</strong><span>just read, calmly</span></a>
+      <a href="https://nostr-client.github.io/micro/"><strong>micro</strong><span>the daily essentials</span></a>
+      <a href="https://nostr-client.github.io/monty/"><strong>monty</strong><span>everything</span></a>
+      <a href="https://nostr-client.github.io/reader/"><strong>reader</strong><span>long-form articles</span></a>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { generateSecretKey, getPublicKey, finalizeEvent } from 'https://esm.sh/nostr-tools@2.10.4/pure'
+  import { nsecEncode, npubEncode, bytesToHex } from 'https://nostr-client.github.io/nip19/nip19.js'
+  import { defaultPool } from 'https://nostr-client.github.io/pool/pool.js'
+  import { profiles } from 'https://nostr-client.github.io/note/note.js'
+
+  const $ = (id) => document.getElementById(id)
+  const dots = $('dots').children
+  function step(n) {
+    for (let i = 0; i < 4; i++) {
+      dots[i].classList.toggle('on', i <= n - 1)
+      $('s' + (i + 1)).classList.toggle('active', i === n - 1)
+    }
+    scrollTo(0, 0)
+  }
+
+  // curated starter pack — profiles resolve live; unresolved ones never render
+  const PACK = [
+    '82341f882b6eabcd2ba7f1ef90aad961cf074af15b9ef44a09f9d2a8fbfbe6a2', // jack
+    '3bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d', // fiatjaf
+    '32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245', // jb55
+    '6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93', // gigi
+    'fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52', // pablo
+    '04c915daefee38317fa734444acee390a8269fe5810b2241e5e6dd343dfbecc9', // odell
+    '97c70a44366a6535c145b333f973ea86dfdc2d7a99da618c40c64705ad98e322', // hodlbod
+  ]
+
+  let sk = null, pk = null
+
+  $('go1').onclick = () => {
+    sk = generateSecretKey()
+    pk = getPublicKey(sk)
+    $('nsec').textContent = nsecEncode(bytesToHex(sk))
+    step(2)
+    // start resolving the pack in the background
+    for (const hex of PACK) {
+      profiles().get(hex, (p) => {
+        if (!p || document.querySelector(`[data-pk="${hex}"]`)) return
+        const row = document.createElement('div')
+        row.className = 'who'
+        row.dataset.pk = hex
+        const img = document.createElement('img')
+        if (p.picture?.startsWith('https://')) img.src = p.picture
+        const n = document.createElement('span')
+        n.className = 'n'
+        n.textContent = p.display_name || p.name || ''
+        const a = document.createElement('span')
+        a.className = 'a'
+        a.textContent = (p.about || '').slice(0, 60)
+        n.append(a)
+        const check = document.createElement('input')
+        check.type = 'checkbox'
+        check.checked = true
+        row.append(img, n, check)
+        const pack = $('pack')
+        if (pack.firstChild?.classList?.contains('status')) pack.firstChild.remove()
+        pack.append(row)
+      })
+    }
+  }
+
+  $('nsec').onclick = () => navigator.clipboard?.writeText($('nsec').textContent)
+  $('saved').onchange = () => { $('go2').disabled = !$('saved').checked }
+  $('go2').onclick = () => step(3)
+
+  $('go3').onclick = async () => {
+    $('go3').disabled = true
+    const status = $('pubstatus')
+    const sign = (evt) => finalizeEvent({ created_at: Math.floor(Date.now() / 1000), ...evt }, sk)
+    try {
+      status.textContent = 'publishing profile…'
+      const content = { name: $('name').value.trim() || 'nostrich' }
+      if ($('about').value.trim()) content.about = $('about').value.trim()
+      const pic = $('picture').value.trim()
+      if (pic.startsWith('https://')) content.picture = pic
+      await defaultPool().publish(sign({ kind: 0, tags: [], content: JSON.stringify(content) }))
+
+      const follows = [...document.querySelectorAll('.who')]
+        .filter((row) => row.querySelector('input').checked)
+        .map((row) => row.dataset.pk)
+      if (follows.length) {
+        status.textContent = 'publishing follows…'
+        await defaultPool().publish(sign({ kind: 3, tags: follows.map((f) => ['p', f]), content: '' }))
+      }
+      const hello = $('hello').value.trim()
+      if (hello) {
+        status.textContent = 'saying hello…'
+        await defaultPool().publish(sign({ kind: 1, tags: [['t', 'introductions']], content: hello }))
+      }
+      // log the whole nostr-client family in (same-origin localStorage, login.js format)
+      localStorage.setItem('nostr-client:login', JSON.stringify({ method: 'local', secretHex: bytesToHex(sk) }))
+      $('npub').textContent = npubEncode(pk)
+      $('npub').onclick = () => navigator.clipboard?.writeText($('npub').textContent)
+      step(4)
+    } catch (err) {
+      status.textContent = '✗ ' + (err.message || err)
+      $('go3').disabled = false
+    }
+  }
+</script>
+</body>
+</html>
