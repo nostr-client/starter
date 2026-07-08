@@ -37,7 +37,9 @@
   .warn { background: #fff7e8; border: 1px solid #f0d9a8; color: #7a5a12;
     border-radius: var(--nc-radius-sm); padding: .7em .9em; font-size: .85rem; }
   .who { display: flex; align-items: center; gap: .7rem; padding: .45rem 0; }
-  .who img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: var(--nc-inset); }
+  .who .pfp { width: 38px; height: 38px; border-radius: 50%; flex: none; overflow: hidden;
+    display: grid; place-items: center; color: #fff; font-weight: 700; }
+  .who .pfp img { width: 100%; height: 100%; object-fit: cover; }
   .who .n { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .who .a { font-weight: 400; font-size: .8rem; color: var(--nc-soft); display: block;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -152,8 +154,16 @@ is your account — on every nostr app, forever.</p>
         const row = document.createElement('div')
         row.className = 'who'
         row.dataset.pk = hex
-        const img = document.createElement('img')
-        if (p.picture?.startsWith('https://')) img.src = p.picture
+        const img = document.createElement('span')
+        img.className = 'pfp'
+        const hue = parseInt(hex.slice(0, 4), 16) % 360
+        img.style.background = `linear-gradient(135deg, hsl(${hue} 62% 60%), hsl(${(hue + 55) % 360} 62% 44%))`
+        img.textContent = [...(p.display_name || p.name || '·')][0].toUpperCase()
+        if (p.picture?.startsWith('https://')) {
+          const real = document.createElement('img')
+          real.onload = () => { img.textContent = ''; img.replaceChildren(real) }
+          real.src = p.picture
+        }
         const n = document.createElement('span')
         n.className = 'n'
         n.textContent = p.display_name || p.name || ''
