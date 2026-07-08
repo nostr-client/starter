@@ -5,6 +5,8 @@ write your profile, follow a few good people, say hello.
 
 **Live:** https://nostr-client.github.io/starter/
 
+![screenshot](screenshot.png)
+
 Four steps, three published events (kind 0 profile, kind 3 contacts, kind 1
 `#introductions` hello), and — because every nostr-client app shares one
 origin and one session format — finishing the flow leaves you **already
